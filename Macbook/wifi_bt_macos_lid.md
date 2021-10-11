@@ -29,7 +29,7 @@ chmod 700 ~/.wakeup
 ```
 
 ### Scripts
-The scripts I'm using can be found under [Scripts/Bash/sleepwatcher](Scripts/Bash/sleepwatcher).
+The scripts I'm using can be found under [Scripts/Bash/sleepwatcher](../Scripts/Bash/sleepwatcher).
 
 #### .sleep
 ```bash

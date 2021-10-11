@@ -4,10 +4,10 @@ if [[ ! -f "$SLEEP_LOG" ]]; then
   touch $SLEEP_LOG;
 fi
 # disable wireless
-echo -e "[`date`] Disabling WiFi:\n" >> $SLEEP_LOG;
-echo -e `networksetup -setairportpower en0 off` >> $SLEEP_LOG;
-echo -e "\n" >> $SLEEP_LOG;
+printf "[`date`] Disabling WiFi" >> $SLEEP_LOG;
+printf `networksetup -setairportpower en0 off` >> $SLEEP_LOG;
+printf "\n" >> $SLEEP_LOG;
 # disable bluetooth (blueutil must be installed, errors will be swallowed as this script is executed by a daemon)
-echo -e "[`date`] Disabling Bluetooth:\n" >> $SLEEP_LOG;
-echo -e `blueutil -p 0` >> $SLEEP_LOG;
-echo -e "\n" >> $SLEEP_LOG;
+printf "[`date`] Disabling Bluetooth" >> $SLEEP_LOG;
+printf `blueutil -p 0` >> $SLEEP_LOG;
+printf "\n" >> $SLEEP_LOG;
