@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+SLEEP_LOG=/tmp/sleep.log
+if [[ ! -f "$SLEEP_LOG" ]]; then
+  touch $SLEEP_LOG;
+fi
+# enable wireless
+sleep 10 # because it's OS X, I guess..?
+echo -e "[`date`] Enabling WiFi:\n" >> $SLEEP_LOG;
+echo -e `networksetup -setairportpower en0 on` >> $SLEEP_LOG;
+echo -e "\n";
+# enable bluetooth (blueutil must be installed, errors will be swallowed as this script is executed by a daemon)
+echo -e "[`date`] Enabling Bluetooth:\n" >> $SLEEP_LOG;
+echo -e `blueutil -p 1` >> $SLEEP_LOG;
+echo -e "\n";
