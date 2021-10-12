@@ -1,13 +1,30 @@
 #!/usr/bin/env bash
-SLEEP_LOG=/tmp/sleep.log
-if [[ ! -f "$SLEEP_LOG" ]]; then
+SLEEP_LOG=/tmp/sleep.log;
+lg () {
+  if [[ $SLEEP_LOG != "" ]]; then printf "[`date`] $1\n" >> $SLEEP_LOG; fi;
+};
+if [[ $SLEEP_LOG != "" && ! -f "$SLEEP_LOG" ]]; then
   touch $SLEEP_LOG;
 fi
+
+CONFIG=~/.swconf;
+
 # disable wireless
-printf "[`date`] Disabling WiFi" >> $SLEEP_LOG;
-printf `networksetup -setairportpower en0 off` >> $SLEEP_LOG;
-printf "\n" >> $SLEEP_LOG;
+status=$(test "$(networksetup -getairportpower en0 | grep -oE '(On|Off)')" == 'On' && echo 1 || echo 0);
+printf $status > $CONFIG; # overwrite existing contents
+if [[ $status == 1 ]]; then
+  lg "Disabling WiFi"
+  networksetup -setairportpower en0 off;
+else
+  lg "WiFi already disabled";
+fi
+
 # disable bluetooth (blueutil must be installed, errors will be swallowed as this script is executed by a daemon)
-printf "[`date`] Disabling Bluetooth" >> $SLEEP_LOG;
-printf `blueutil -p 0` >> $SLEEP_LOG;
-printf "\n" >> $SLEEP_LOG;
+status=$(blueutil -p)
+printf $status >> $CONFIG; # append!
+if [[ $status == 1 ]]; then
+  lg "Disabling Bluetooth";
+  blueutil -p 0
+else
+  lg "Bluetooth already disabled"
+fi

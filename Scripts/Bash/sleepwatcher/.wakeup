@@ -1,13 +1,27 @@
 #!/usr/bin/env bash
-SLEEP_LOG=/tmp/sleep.log
-if [[ ! -f "$SLEEP_LOG" ]]; then
+SLEEP_LOG=/tmp/sleep.log;
+lg () {
+  if [[ $SLEEP_LOG != '' ]]; then printf "[`date`] $1\n" >> $SLEEP_LOG; fi;
+};
+if [[ $SLEEP_LOG != '' && ! -f "$SLEEP_LOG" ]]; then
   touch $SLEEP_LOG;
 fi
+
+CONFIG=~/.swconf;
+FLAGS=$(cat $CONFIG);
+printf '' > $CONFIG; # clear, just in case
+
 # enable wireless
-printf "[`date`] Enabling WiFi" >> $SLEEP_LOG;
-printf `networksetup -setairportpower en0 on` >> $SLEEP_LOG;
-printf "\n" >> $SLEEP_LOG;
-# enable bluetooth (blueutil must be installed, errors will be swallowed as this script is executed by a daemon)
-printf "[`date`] Enabling Bluetooth" >> $SLEEP_LOG;
-printf `blueutil -p 1` >> $SLEEP_LOG;
-printf "\n" >> $SLEEP_LOG;
+if [[ ${FLAGS:0:1} == 1 ]]; then
+  lg "Enabling WiFi";
+  networksetup -setairportpower en0 on;
+else
+  lg "Not enabling WiFi (was disabled before lid was closed)";
+fi
+if [[ ${FLAGS:1:1} == 1 ]]; then
+  # enable bluetooth (blueutil must be installed, errors will be swallowed as this script is executed by a daemon)
+  lg "Enabling Bluetooth";
+  blueutil -p 1;
+else
+  lg "Not enabling Bluetooth (was disabled before lid was closed)";
+fi
